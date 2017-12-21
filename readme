@@ -1,0 +1,8 @@
+Install pymongo and mongo in your machine.
+
+Run django with python3.
+
+Into the myapp folder, type python3 manage.py runserver [IPYOURMachine]:[PORT]
+
+Access throught the following URL in a browser: [IPYOURMachine]:[PORT]/tempCode/[COLLECTION-OPTIONAL]/?leitura={"json-content":1}
+
