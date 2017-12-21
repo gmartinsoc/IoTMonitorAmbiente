@@ -2,7 +2,7 @@
 #include <DHT.h>
 
 const char* ssid = "hsNCE";
-const char* host = "www.dweet.io";
+const char* host = "172.22.15.2";
 
 int contaFalhas=0;
 int contReads = 0;
@@ -42,7 +42,7 @@ void enviar(String json){
         json.concat("%7D%5D%7D");
 //      json.concat("}]}");
           
-        String s = "GET /dweet/for/labnet?valorDigital=";
+        String s = "GET /sala6/leituras=";
         
         s.concat(json);
                 
