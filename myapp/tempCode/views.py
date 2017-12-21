@@ -10,7 +10,7 @@ from . import mongoDB
 def index(request):
     leitura = request.GET['leitura']
     mongoDB.inserirBD(leitura)
-    return HttpResponse("Leitura salva")
+    return HttpResponse("Leitura salva. Especifique uma collection com um identificado para o ambiente</br>Ex: sala6, ou labweb-ufrrj")
 
 
 def colecao(request, collection):   

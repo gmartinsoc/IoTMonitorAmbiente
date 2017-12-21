@@ -2,13 +2,16 @@
 # -*- coding: utf-8 -*-
 import pymongo
 import json
-
+from datetime import datetime
 
 def inserirBD(jsonInsert, collection="", db=""):
 
     mongo = pymongo.MongoClient()
 
     jsonInsert = json.loads(jsonInsert)
+    timestamp = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+    jsonInsert['timestamp']=timestamp
+    
 
     if (db==""):
         db = "moniT" #monitoração de temperatura das salas de servidor da UFRJ
