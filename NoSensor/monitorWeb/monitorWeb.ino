@@ -39,10 +39,10 @@ void enviar(String json){
         contaFalhas=0;
 
         //encerra json reads com }]}
-        json.concat("%7D%5D%7D");
+        json.concat("%5D%7D");
 //      json.concat("}]}");
           
-        String s = "GET /sala6/leituras=";
+        String s = "GET /sala6/leitura=";
         
         s.concat(json);
                 
@@ -71,6 +71,10 @@ void enviar(String json){
     //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
     reads = "%7B%22reads%22:%5B";
 //  reads = "{\"reads\":[";
+
+    //zera contador
+    contReads = 0;
+
   
 }
 
@@ -80,10 +84,14 @@ String criarJSON(float temp, float umd){
  
   //json com leitura de temperatura e umidade que sera incluida no buffer    
   String r = "%7B%22temp%22:";
+  //String r = "{\"temp\":";
+
+  contReads ++;
+  
   r.concat(String(temp));  
   r.concat(",%22umd%22:");
   r.concat(String(umd));
-  r.concat(",%22counter%22:");
+  r.concat(",%22count%22:");
   r.concat(String(contReads));
   r.concat(",%22timestamp%22:");
   r.concat(String(timestamp));
@@ -92,7 +100,6 @@ String criarJSON(float temp, float umd){
   r.concat(",%22id_sensor%22:null,%22place%22:%22");
   r.concat(place);
   r.concat("%22%7D");
-  
 
   return r;
   
@@ -105,23 +112,16 @@ void loop(){
     float temp = dht.readTemperature();
 
     String r = criarJSON(temp, umd);
-        
-    contReads ++;
-
+    reads.concat(r);    
+    
     //situacao de emergencia, envio imediato dos dados
     if (temp >= 40){
        enviar(reads);
 
-       //zera contador
-       contReads = 0;
-
     }else{
-      if(contReads == 3){
+      if(contReads == 15){
         
         enviar(reads);
-
-        //zera contador
-        contReads = 0;
 
       }else{
         //adiciona virgula entre as leituras (read) no json
