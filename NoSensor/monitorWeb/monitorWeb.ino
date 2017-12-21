@@ -2,7 +2,7 @@
 #include <DHT.h>
 
 const char* ssid = "hsNCE";
-const char* host = "172.22.15.2";
+const char* host = "srv03.labnet.nce.ufjr.br";
 
 int contaFalhas=0;
 int contReads = 0;
@@ -47,7 +47,7 @@ void enviar(String json){
         s.concat(json);
                 
         client.println(s);   
-        client.println("Host: www.dweet.io");
+        client.println("Host: srv03.labnet.nce.ufjr.br");
         client.println("Accept-Charset: utf-8");
         client.println("Connection: close");
         client.println();   
