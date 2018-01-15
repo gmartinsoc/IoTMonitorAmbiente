@@ -1,8 +1,10 @@
 #include <ESP8266WiFi.h>
 #include <DHT.h>
+#include <ESP8266HTTPClient.h>
 
 const char* ssid = "hsNCE";
-const char* host = "srv03.labnet.nce.ufjr.br";
+const char* host = "srv03.labnet.nce.ufrj.br";
+String servidor = "http://srv03.labnet.nce.ufrj.br";
 
 int contaFalhas=0;
 int contReads = 0;
@@ -32,7 +34,7 @@ void setup(){
 
 void(* resetFunc) (void) = 0;
 
-void enviar(String json){
+void enviarBackup(String json){
 
     if (client.connect(host, 80)) {
      
@@ -42,13 +44,15 @@ void enviar(String json){
         json.concat("%5D%7D");
 //      json.concat("}]}");
           
-        String s = "GET /sala6/leitura=";
+        String s = "GET /tempCode/sala6/leitura=";
         
-        s.concat(json);
+        //s.concat(json);
+
+        //Serial.println(s);
                 
         client.println(s);   
-        client.println("Host: srv03.labnet.nce.ufjr.br");
-        client.println("Accept-Charset: utf-8");
+        client.println("Host: srv03.labnet.nce.ufrj.br");
+        //client.println("Accept-Charset: utf-8");
         client.println("Connection: close");
         client.println();   
         
@@ -75,7 +79,35 @@ void enviar(String json){
     //zera contador
     contReads = 0;
 
+}
+
+void enviar(String json){
+
+  HTTPClient http;
+  String url = servidor;
+  json.concat("%5D%7D");//json.concat("}]}");
   
+  url.concat("/tempCode/sala6/leitura=");  
+  url.concat(json);
+  
+  http.begin(url);
+
+  // start connection and send HTTP header  
+  int httpCode = http.GET();
+  int auxResp = httpCode - 200;
+
+  //TODO: piscar leds com codigo para indicar erro ou sucesso
+  if ((auxResp > 0) && (auxResp < 100)){
+    printf("Funcionou %d",httpCode);
+  }else{
+    printf("Error:,%d",httpCode);
+    
+  }
+
+  //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
+  reads = "%7B%22reads%22:%5B";
+  //reads = "{\"reads\":[";
+
 }
 
 String criarJSON(float temp, float umd){
@@ -115,8 +147,10 @@ void loop(){
     reads.concat(r);    
     
     //situacao de emergencia, envio imediato dos dados
-    if (temp >= 40){
-       enviar(reads);
+    if (temp >= 1){
+      
+      enviar(reads);
+      Serial.println("enviou!");
 
     }else{
       if(contReads == 15){
@@ -130,6 +164,6 @@ void loop(){
             
     }
     
-    delay(60000);
+    delay(10000);
  
 }
