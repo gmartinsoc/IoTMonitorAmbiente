@@ -44,7 +44,7 @@ void enviarBackup(String json){
         json.concat("%5D%7D");
 //      json.concat("}]}");
           
-        String s = "GET /tempCode/sala6/leitura=";
+        String s = "GET /tempCode/sala6/?leitura=";
         
         //s.concat(json);
 
@@ -85,11 +85,12 @@ void enviar(String json){
 
   HTTPClient http;
   String url = servidor;
-  json.concat("%5D%7D");//json.concat("}]}");
+  json.concat("%5D%7D");
+//  json.concat("}]}");
   
-  url.concat("/tempCode/sala6/leitura=");  
+  url.concat("/tempCode/sala6/?leitura=");  
   url.concat(json);
-  
+  Serial.println(url);
   http.begin(url);
 
   // start connection and send HTTP header  
@@ -106,7 +107,7 @@ void enviar(String json){
 
   //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
   reads = "%7B%22reads%22:%5B";
-  //reads = "{\"reads\":[";
+//  reads = "{\"reads\":[";
 
 }
 
@@ -115,23 +116,29 @@ String criarJSON(float temp, float umd){
   int timestamp = contReads; //variavel global usada na contagem. paliativo ate conseguirmos incluir millis ou (melhor) gerarmos a estampa de tempo direto no nó.
  
   //json com leitura de temperatura e umidade que sera incluida no buffer    
-  String r = "%7B%22temp%22:";
-  //String r = "{\"temp\":";
+//  String r = "%7B%22temp%/22:";
+  String r = "{\"temp\":";
 
   contReads ++;
   
-  r.concat(String(temp));  
+  r.concat(String(temp));
   r.concat(",%22umd%22:");
+//  r.concat(",\"umd\":");
   r.concat(String(umd));
   r.concat(",%22count%22:");
+//  r.concat(",\"count\":");
   r.concat(String(contReads));
   r.concat(",%22timestamp%22:");
+//  r.concat(",\"timestamp\":");
   r.concat(String(timestamp));
   r.concat(",%22id_no%22:");
-  r.concat(String(id_no)); 
+//  r.concat(",\"id_no\":");
+  r.concat(String(id_no));
   r.concat(",%22id_sensor%22:null,%22place%22:%22");
+///  r.concat(",\"id_sensor\":null,\"place\":\"");
   r.concat(place);
   r.concat("%22%7D");
+//  r.concat("\"}");
 
   return r;
   
@@ -147,11 +154,10 @@ void loop(){
     reads.concat(r);    
     
     //situacao de emergencia, envio imediato dos dados
-    if (temp >= 1){
+    if (temp >= 40){
       
       enviar(reads);
-      Serial.println("enviou!");
-
+      
     }else{
       if(contReads == 15){
         
