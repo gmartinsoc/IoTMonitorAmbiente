@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<!-- http://infolib.lotus.com/resources/portal/8.0.0/doc/pt_br/PT800ACD002/dev/ajax_proxy_cfg_xmpl.html configurar proxy -->
+
+<script type="text/javascript">
+
+    function atualizar() {
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+         document.getElementById("resp").innerHTML = this.responseText;
+        }
+      };
+      xhttp.open("GET", "http://srv03.labnet.nce.ufrj.br/visualizacao/monServ/sala6", true);//colocar banco e colecao desejada.
+      xhttp.send();
+    }
+
+</script>
+
+
+</head>
+
+<body onload="atualizar();">
+    <div id = "resp">
+    <h1>Teste</h1>
+    </div>
+    <input type="button" value="teste" onclick="atualizar();" />
+</body>
+
+</html>
