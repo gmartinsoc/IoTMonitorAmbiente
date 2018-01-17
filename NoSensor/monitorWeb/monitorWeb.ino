@@ -20,6 +20,18 @@ DHT dht(PinoEntradaAM2321, DHT22);
 
 WiFiClient client; //Declarando o cliente WI-FI
 
+//Variáveis que foram tiradas dos Loops
+String s;
+HTTPClient http;
+String url;
+int httpCode;
+int auxResp;
+int timestamp;
+String r;
+float umd;
+float temp;
+String local_r;
+
 void setup(){
 
   Serial.begin(9600);
@@ -44,7 +56,7 @@ void enviarBackup(String json){
         json.concat("%5D%7D");
 //      json.concat("}]}");
           
-        String s = "GET /tempCode/sala6/?leitura=";
+        s = "GET /tempCode/sala6/?leitura=";
         
         //s.concat(json);
 
@@ -83,8 +95,8 @@ void enviarBackup(String json){
 
 void enviar(String json){
 
-  HTTPClient http;
-  String url = servidor;
+
+  url = servidor;
   json.concat("%5D%7D");
 //  json.concat("}]}");
   
@@ -94,8 +106,8 @@ void enviar(String json){
   http.begin(url);
 
   // start connection and send HTTP header  
-  int httpCode = http.GET();
-  int auxResp = httpCode - 200;
+  httpCode = http.GET();
+  auxResp = httpCode - 200;
 
   //TODO: piscar leds com codigo para indicar erro ou sucesso
   if ((auxResp > 0) && (auxResp < 100)){
@@ -113,45 +125,45 @@ void enviar(String json){
 
 String criarJSON(float temp, float umd){
 
-  int timestamp = contReads; //variavel global usada na contagem. paliativo ate conseguirmos incluir millis ou (melhor) gerarmos a estampa de tempo direto no nó.
+  timestamp = contReads; //variavel global usada na contagem. paliativo ate conseguirmos incluir millis ou (melhor) gerarmos a estampa de tempo direto no nó.
  
   //json com leitura de temperatura e umidade que sera incluida no buffer    
 //  String r = "%7B%22temp%/22:";
-  String r = "{\"temp\":";
+  local_r = "{\"temp\":";
 
   contReads ++;
   
-  r.concat(String(temp));
-  r.concat(",%22umd%22:");
+  local_r.concat(String(temp));
+  local_r.concat(",%22umd%22:");
 //  r.concat(",\"umd\":");
-  r.concat(String(umd));
-  r.concat(",%22count%22:");
+  local_r.concat(String(umd));
+  local_r.concat(",%22count%22:");
 //  r.concat(",\"count\":");
-  r.concat(String(contReads));
-  r.concat(",%22timestamp%22:");
+  local_r.concat(String(contReads));
+  local_r.concat(",%22timestamp%22:");
 //  r.concat(",\"timestamp\":");
-  r.concat(String(timestamp));
-  r.concat(",%22id_no%22:");
+  local_r.concat(String(timestamp));
+  local_r.concat(",%22id_no%22:");
 //  r.concat(",\"id_no\":");
-  r.concat(String(id_no));
-  r.concat(",%22id_sensor%22:null,%22place%22:%22");
+  local_r.concat(String(id_no));
+  local_r.concat(",%22id_sensor%22:null,%22place%22:%22");
 ///  r.concat(",\"id_sensor\":null,\"place\":\"");
-  r.concat(place);
-  r.concat("%22%7D");
+  local_r.concat(place);
+  local_r.concat("%22%7D");
 //  r.concat("\"}");
 
-  return r;
+  return local_r;
   
 }
 
 void loop(){    
 
   
-    float umd = dht.readHumidity();
-    float temp = dht.readTemperature();
+    umd = dht.readHumidity();
+    temp = dht.readTemperature();
 
-    String r = criarJSON(temp, umd);
-    reads.concat(r);    
+    //String r = criarJSON(temp, umd);
+    reads.concat(criarJSON(temp, umd));    
     
     //situacao de emergencia, envio imediato dos dados
     if (temp >= 40){
