@@ -21,15 +21,20 @@ DHT dht(PinoEntradaAM2321, DHT22);
 WiFiClient client; //Declarando o cliente WI-FI
 
 void setup(){
+  
+  pinMode(2,OUTPUT);
+ //Serial.begin(9600);
+ //digitalWrite(2,LOW);
 
-  Serial.begin(9600);
+  
   WiFi.begin(ssid);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);   
   }
-  Serial.println("WI-FI connected.");
+  //Serial.println("WI-FI connected.");
   // Inicializa o DHT22
   dht.begin();
+
 }
 
 void(* resetFunc) (void) = 0;
@@ -90,7 +95,7 @@ void enviar(String json){
   
   url.concat("/tempCode/sala6/?leitura=");  
   url.concat(json);
-  Serial.println(url);
+  //Serial.println(url);
   http.begin(url);
 
   // start connection and send HTTP header  
@@ -100,9 +105,22 @@ void enviar(String json){
   //TODO: piscar leds com codigo para indicar erro ou sucesso
   if ((auxResp > 0) && (auxResp < 100)){
     printf("Funcionou %d",httpCode);
+    
+    //pisca por 1 segundo caso envie com sucesso
+    //LED BLUE on = LOW/ LED BLUE off = HIGH 
+    digitalWrite(0,LOW);
+    delay(1000);
+    digitalWrite(0,HIGH);
+    
+
+    
   }else{
     printf("Error:,%d",httpCode);
     
+    //Em caso de erro o led fica aceso ate a proxima leitura ser feita
+    //LED BLUE on = LOW/ LED BLUE off = HIGH 
+    digitalWrite(2,LOW);
+
   }
 
   //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
@@ -116,8 +134,8 @@ String criarJSON(float temp, float umd){
   int timestamp = contReads; //variavel global usada na contagem. paliativo ate conseguirmos incluir millis ou (melhor) gerarmos a estampa de tempo direto no nó.
  
   //json com leitura de temperatura e umidade que sera incluida no buffer    
-//  String r = "%7B%22temp%/22:";
-  String r = "{\"temp\":";
+  String r = "%7B%22temp%22:";
+  //String r = "{\"temp\":";
 
   contReads ++;
   
@@ -171,5 +189,7 @@ void loop(){
     }
     
     delay(10000);
- 
+    //LED BLUE on = LOW/ LED BLUE off = HIGH 
+    digitalWrite(2,HIGH);
+    
 }
