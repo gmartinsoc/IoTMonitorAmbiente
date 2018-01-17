@@ -1,4 +1,5 @@
 import pymongo
+#import json
 
 
 def consultarBD(collection="", db=""):
@@ -13,5 +14,8 @@ def consultarBD(collection="", db=""):
     db = mongo[db]    
     collection = db[collection]
     #collection.insert(jsonInsert)
-    return collection.find({}).sort({_id:-1}).limit(1)
-    #db.market.find({}).sort({_id:-1}).limit(1) #consulta origial
+    jsonResposta = collection.find().sort("_id",-1).limit(1)
+    jsonResposta = jsonResposta[0]
+    return jsonResposta['reads'][-1] 
+    
+#print (consultarBD("sala6","monServ"))
