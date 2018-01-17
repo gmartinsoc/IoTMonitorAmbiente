@@ -14,7 +14,7 @@ String reads = "%7B%22reads%22:%5B";
 int id_no = 1;
 String place = "sala6";
 //Nome da Colecao
-String nomecolecao = "monitoraNCE";
+String nomecolecao = "sala6";
 
 const int PinoEntradaAM2321= 14; //pinoD5
 // Define pino e tipo do sensor DHT
