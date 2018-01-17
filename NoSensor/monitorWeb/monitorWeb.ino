@@ -13,6 +13,8 @@ String reads = "%7B%22reads%22:%5B";
 //String reads = "{\"reads\":[";
 int id_no = 1;
 String place = "sala6";
+//Nome da Colecao
+String nomecolecao = "monitoraNCE";
 
 const int PinoEntradaAM2321= 14; //pinoD5
 // Define pino e tipo do sensor DHT
@@ -102,7 +104,11 @@ void enviar(String json){
   json.concat("%5D%7D");
 //  json.concat("}]}");
   
-  url.concat("/tempCode/sala6/?leitura=");  
+  //url.concat("/tempCode/sala6/?leitura=");
+  url.concat("/tempCode/");
+  url.concat(nomecolecao);
+  url.concat("/?leitura=");
+  
   url.concat(json);
   //Serial.println(url);
   http.begin(url);
