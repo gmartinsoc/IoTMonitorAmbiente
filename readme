@@ -1,7 +1,8 @@
-This project covering the code to get data from sensors, publish in a mongo database and then show data in a web page. 
+This project covers the code to get data from sensors. The data is published in a mongo database. Some processing is made
+to show the processed data in a web page. 
 First the used sensor is an arduino ESP8266. The code available use the sensor to get temperature and humidity from an 
-environment using a DHT22 (or DHT21) sensor. The server code is a python web project (in the server) that stay listing 
-sensor data (in json formart) to save in the mongoDB. Besides, the sensing reads are used to plot graphs in a web page 
+environment using a DHT22 (or DHT11) sensor. The server side is a python web project that stay listing 
+sensored data (in json formart) to save in the mongoDB. Besides, the sensing reads are used to plot graphs in a web page 
 developed using python and javascript libraries.
 
 Install pymongo and mongo in your machine.
