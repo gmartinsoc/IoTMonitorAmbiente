@@ -3,10 +3,10 @@
 #include <ESP8266HTTPClient.h>
 
 const char* ssid = "hsNCE";
-const char* host = "srv03.labnet.nce.ufrj.br";
+//const char* host = "srv03.labnet.nce.ufrj.br";
 String servidor = "http://srv03.labnet.nce.ufrj.br";
 
-int contaFalhas=0;
+//int contaFalhas=0;
 int contReads = 0;
 //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
 String reads = "%7B%22reads%22:%5B";
@@ -25,12 +25,21 @@ void setup(){
   pinMode(2,OUTPUT);
  //Serial.begin(9600);
  //digitalWrite(2,LOW);
-
   
   WiFi.begin(ssid);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);   
+    delay(500); 
   }
+
+  //codigo para indicar que conexao com wifi foi estabelecida
+  digitalWrite(2,LOW);
+  delay(500);
+  digitalWrite(2,HIGH);
+  delay(200);
+  digitalWrite(2,LOW);
+  delay(1000);
+  digitalWrite(2,HIGH);
+  
   //Serial.println("WI-FI connected.");
   // Inicializa o DHT22
   dht.begin();
@@ -39,52 +48,52 @@ void setup(){
 
 void(* resetFunc) (void) = 0;
 
-void enviarBackup(String json){
-
-    if (client.connect(host, 80)) {
-     
-        contaFalhas=0;
-
-        //encerra json reads com }]}
-        json.concat("%5D%7D");
-//      json.concat("}]}");
-          
-        String s = "GET /tempCode/sala6/?leitura=";
-        
-        //s.concat(json);
-
-        //Serial.println(s);
-                
-        client.println(s);   
-        client.println("Host: srv03.labnet.nce.ufrj.br");
-        //client.println("Accept-Charset: utf-8");
-        client.println("Connection: close");
-        client.println();   
-        
-        while (client.connected()){
-          if (client.available()) {
-            String line = client.readStringUntil('\n');
-          }
-        }
-        
-        client.stop();
-        
-    }else {
-        
-        client.stop();
-        contaFalhas++;
-        if (contaFalhas>5) resetFunc();
-        
-    }
-    
-    //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
-    reads = "%7B%22reads%22:%5B";
-//  reads = "{\"reads\":[";
-
-    //zera contador
-    contReads = 0;
-
-}
+//void enviarBackup(String json){
+//
+//    if (client.connect(host, 80)) {
+//     
+//        contaFalhas=0;
+//
+//        //encerra json reads com }]}
+//        json.concat("%5D%7D");
+////      json.concat("}]}");
+//          
+//        String s = "GET /tempCode/sala6/?leitura=";
+//        
+//        //s.concat(json);
+//
+//        //Serial.println(s);
+//                
+//        client.println(s);   
+//        client.println("Host: srv03.labnet.nce.ufrj.br");
+//        //client.println("Accept-Charset: utf-8");
+//        client.println("Connection: close");
+//        client.println();   
+//        
+//        while (client.connected()){
+//          if (client.available()) {
+//            String line = client.readStringUntil('\n');
+//          }
+//        }
+//        
+//        client.stop();
+//        
+//    }else {
+//        
+//        client.stop();
+//        contaFalhas++;
+//        if (contaFalhas>5) resetFunc();
+//        
+//    }
+//    
+//    //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
+//    reads = "%7B%22reads%22:%5B";
+////  reads = "{\"reads\":[";
+//
+//    //zera contador
+//    contReads = 0;
+//
+//}
 
 void enviar(String json){
 
@@ -104,19 +113,16 @@ void enviar(String json){
 
   //TODO: piscar leds com codigo para indicar erro ou sucesso
   if ((auxResp > 0) && (auxResp < 100)){
-    printf("Funcionou %d",httpCode);
+//    printf("Funcionou %d",httpCode);
     
     //pisca por 1 segundo caso envie com sucesso
     //LED BLUE on = LOW/ LED BLUE off = HIGH 
-    digitalWrite(0,LOW);
+    digitalWrite(2,LOW);
     delay(1000);
-    digitalWrite(0,HIGH);
-    
-
-    
+    digitalWrite(2,HIGH);
+        
   }else{
-    printf("Error:,%d",httpCode);
-    
+//    printf("Error:,%d",httpCode);    
     //Em caso de erro o led fica aceso ate a proxima leitura ser feita
     //LED BLUE on = LOW/ LED BLUE off = HIGH 
     digitalWrite(2,LOW);
@@ -126,6 +132,7 @@ void enviar(String json){
   //inicia o json reads de leituras com {"reads":[{ codificado com url enconding
   reads = "%7B%22reads%22:%5B";
 //  reads = "{\"reads\":[";
+  contReads = 0;
 
 }
 
