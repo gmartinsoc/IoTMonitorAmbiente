@@ -18,3 +18,9 @@ def colecao(request, collection):
     mongoDB.inserirBD(leitura,collection)
     response = "Leitura salva na coleção %s."
     return HttpResponse(response % collection)
+
+def banco(request,bd,collection):
+    leitura = request.GET['leitura']
+    mongoDB.inserirBD(leitura,collection,bd)
+    response = "Leitura salvar no banco %s, colecao %s."
+    return HttpResponse(response % (bd,collection))
